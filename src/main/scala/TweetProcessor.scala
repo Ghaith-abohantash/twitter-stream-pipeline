@@ -1,7 +1,7 @@
 import scala.util.matching.Regex
 
 object TweetProcessor {
-  def processTweet(tweet: String, timestamp: String, tweetId: String, geoCoordinates: Option[(Double, Double)]): String = {
+  def processTweet(tweet: String, timestamp: String, tweetId: String, geoCoordinates: Option[(Double, Double)], location: Option[String]): String = {
     val stopWords = Set("the", "is", "and", "a", "of", "in")
 
     val cleanedTweet = tweet.split("\\s+")
@@ -25,6 +25,7 @@ object TweetProcessor {
          |Hashtags: ${hashtags.mkString(", ")}
          |Mentions: ${mentions.mkString(", ")}
          |Coordinates: ${geoCoordinates.map(coord => s"Lat: ${coord._1}, Long: ${coord._2}").getOrElse("N/A")}
+         |Location: ${location.getOrElse("N/A")}
          |Timestamp: $timestamp
        """.stripMargin
 

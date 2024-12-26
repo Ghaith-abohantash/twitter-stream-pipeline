@@ -2,6 +2,9 @@ import org.apache.kafka.clients.consumer.{KafkaConsumer, ConsumerConfig}
 import java.util.Properties
 import scala.collection.JavaConverters._
 import play.api.libs.json._
+import org.apache.spark.sql.SparkSession
+import SentimentAnalysis._
+import TweetProcessor._
 
 object Consumer {
   def main(args: Array[String]): Unit = {
@@ -13,6 +16,13 @@ object Consumer {
 
     val consumer = new KafkaConsumer[String, String](props)
     consumer.subscribe(java.util.Collections.singletonList("tweets-stream"))
+
+    val spark = SparkSession.builder()
+      .appName("SentimentAnalysis")
+      .master("local[*]")
+      .config("spark.local.dir", "C:/spark-temp")
+      .config("spark.hadoop.fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
+      .getOrCreate()
 
     try {
       while (true) {
@@ -31,9 +41,14 @@ object Consumer {
                 case _ => None
               }
 
-            val processedTweet = TweetProcessor.processTweet(tweet, timestamp, tweetId, geoCoordinates)
+            val location = (tweetJson \ "place" \ "full_name").asOpt[String]
+              .orElse((tweetJson \ "user" \ "location").asOpt[String])
 
-            println(processedTweet)
+            val sentiment = SentimentAnalysis.processTweetSentiment(tweet, spark)
+
+            val processedTweet = TweetProcessor.processTweet(tweet, timestamp, tweetId, geoCoordinates, location)
+
+            println(s"$processedTweet\nSentiment: $sentiment\n")
           } catch {
             case e: Exception =>
               println(s"Error processing tweet: ${e.getMessage}")
