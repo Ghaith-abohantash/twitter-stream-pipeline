@@ -17,6 +17,8 @@ lazy val root = (project in file("."))
       "com.johnsnowlabs.nlp" %% "spark-nlp" % "5.0.0",
       "org.apache.hadoop" % "hadoop-client" % "3.3.1",
       "org.apache.parquet" % "parquet-hadoop" % "1.11.1",
-      "com.typesafe.play" %% "play-json" % "2.9.2"
+      "com.typesafe.play" %% "play-json" % "2.9.2",
+      "org.apache.httpcomponents" % "httpclient" % "4.5.13",
+"org.elasticsearch.client" % "elasticsearch-rest-high-level-client" % "7.10.0"
     )
   )

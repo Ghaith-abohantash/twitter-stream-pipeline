@@ -2,7 +2,7 @@ import scala.util.matching.Regex
 
 object TweetProcessor {
   def processTweet(tweet: String, timestamp: String, tweetId: String, geoCoordinates: Option[(Double, Double)], location: Option[String]): String = {
-    val stopWords = Set("the", "is", "and", "a", "of", "in")
+    val stopWords = Set("the", "is", "and", "a", "of", "in","Iam","Rt")
 
     val cleanedTweet = tweet.split("\\s+")
       .filter(word => !word.startsWith("http") && !word.startsWith("@") && !word.startsWith("#"))
